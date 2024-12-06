@@ -1231,7 +1231,9 @@ class DPOTrainer(Trainer):
         reward_accuracies = (chosen_rewards > rejected_rewards).float()
 
         if self.args.rpo_alpha is not None:
-            losses = losses + self.args.rpo_alpha * model_output["nll_loss"]  # RPO loss from V3 of the paper
+            losses = losses + self.args.rpo_alpha * model_output["nll_loss"].to(
+                self.accelerator.device
+            )  # RPO loss from V3 of the paper
 
         if self.use_weighting:
             losses = losses * model_output["policy_weights"]
